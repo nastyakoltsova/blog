@@ -1,6 +1,39 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
+// const navigate = useNavigate();
 
 export function Login(): JSX.Element {
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        try {
+            const response = await fetch('http://localhost:3000/api/users/auth', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+                body: JSON.stringify({
+                    email: data.get('email'),
+                    password: data.get('password'),
+                }),
+            });
+            const result = await response.json();
+            if (result.status === 200) {
+                const userData = {id: result.id, email: result.email}
+                localStorage.setItem('userData', JSON.stringify(userData));
+                // navigate('/profile')
+            } else if (result.status === 403) {
+                alert('Неверное имя пользователя или пароль!')
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleChange = (event) => {
+        setFormData({ ...formData, [event.target.name]: event.target.value });
+    };
+
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -12,7 +45,7 @@ export function Login(): JSX.Element {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" action="#" method="POST">
+                    <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Email
@@ -23,6 +56,7 @@ export function Login(): JSX.Element {
                                     name="email"
                                     type="email"
                                     autoComplete="email"
+                                    onChange={handleChange}
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
@@ -45,6 +79,7 @@ export function Login(): JSX.Element {
                                     id="password"
                                     name="password"
                                     type="password"
+                                    onChange={handleChange}
                                     autoComplete="current-password"
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

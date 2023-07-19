@@ -7,14 +7,15 @@ const path = require('path');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const dbCheck = require('./db/dbCheck');
+const cors = require('cors');
 
 
 const app = express();
 
 // const indexRoutes = require('./src/routes/index.routes');
-const authRoutes = require('./src/routes/auth.routes');
+const usersApi = require('./src/routes/user.api');
 
-const { PORT = 3111, COOKIE_SECRET = 'secretik' } = process.env;
+const { PORT = 3000, COOKIE_SECRET = 'secretik' } = process.env;
 app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -33,9 +34,11 @@ app.use(
     },
   }),
 );
+app.use(cors({ credentials: true, origin: true }));
 
 // app.use('/', indexRoutes);
-app.use('/auth', authRoutes);
+app.use('/api/users', usersApi);
+
 
 dbCheck();
 app.listen(PORT, (err) => {
