@@ -1,42 +1,29 @@
-export function News(): JSX.Element {
-    const posts = [
-        {
-            id: 1,
-            user: 'Bob',
-            text: 'kgkh kxdlfkmgnxld fghmnl bkdflm n ldghf nbdg nbdzgd bcv dzgdhng bvghd',
-            date: '01.01.2023'
-        },
-        {
-            id: 2,
-            user: 'Bill',
-            text: 'kgkh kxdlfkmgnxld',
-            date: '01.01.2023'
-        },
-        {
-            id: 3,
-            user: 'Ben',
-            text: 'kgkh fghmnl bkdflm n ldghf nbdg nbdzgd bcv dzgdhng bvghd',
-            date: '01.01.2023'
-        },
-        {
-            id: 4,
-            user: 'Broke',
-            text: 'kgkh fghmnl bkdflm n ldghf nbdg nbdzgd bcv dzgdhng bvghd kgkh fghmnl bkdflm n ldghf nbdg nbdzgd bcv ' +
-                'dzgdhng bvghd kgkh fghmnl bkdflm n ldghf nbdg nbdzgd bcv dzgdhng bvghd kgkh fghmnl bkdflm n ldghf nbdg ' +
-                'nbdzgd bcv dzgdhng bvghd kgkh fghmnl bkdflm n ldghf nbdg nbdzgd bcv dzgdhng bvghd',
-            date: '01.01.2023'
-        },
+import {useEffect, useState} from "react";
 
-    ]
+export function News(): JSX.Element {
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        (async function() {
+            try {
+                const response = await fetch('http://localhost:3000/api/news');
+                const result = await response.json();
+                setPosts(result.data);
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [])
+
     return (
         <>
             <div className={'pt-10'}>
                 <div className={'font-bold text-5xl flex w-2/4 mx-auto'}>Новости</div>
                 <div className={'card-box flex flex-col justify-center w-2/4 mx-auto'}>
                     {posts && posts.map((el) =>
-                        <div className={'flex flex-col text-center mt-5 border-2 bg-blue-100 rounded-xl'}>
+                        <div key={el.id} className={'flex flex-col text-center mt-5 border-2 bg-blue-100 rounded-xl'}>
                             <div className={'self-start ml-4 mt-2 font-bold'}>
-                                {el.user}
+                                <p>{el.firstName} {el.lastName}</p>
                             </div>
                             <div className={'self-start text-left m-4'}>
                                 {el.text}

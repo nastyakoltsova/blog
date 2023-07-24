@@ -14,6 +14,8 @@ const app = express();
 
 // const indexRoutes = require('./src/routes/index.routes');
 const usersApi = require('./src/routes/user.api');
+const newsApi = require('./src/routes/news.api');
+const profileRoute = require('./src/routes/profile.route');
 
 const { PORT = 3000, COOKIE_SECRET = 'secretik' } = process.env;
 app.use(express.static(path.join(process.cwd(), 'public')));
@@ -38,6 +40,8 @@ app.use(cors({ credentials: true, origin: true }));
 
 // app.use('/', indexRoutes);
 app.use('/api/users', usersApi);
+app.use('/api/news', newsApi);
+app.use('/api/profile', profileRoute);
 
 
 dbCheck();

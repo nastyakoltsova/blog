@@ -26,26 +26,35 @@ router.post('/auth', async (req, res) => {
 
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    return res.sendStatus(401);
+    return res.json({status: 401});
   }
   const passwordIsValid = await bcrypt.compare(password, user.password);
   if (!passwordIsValid) {
-    return res.sendStatus(401);
+    return res.json({status: 401});
   }
   req.session.user = user;
-  res.sendStatus(200);
+  res.json({status: 200, email, id: user.id});
 });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy((e) => {
-    if (e) {
-      console.log(e);
-      return;
+router.post('/logout', (req, res) => {
+  req.session.destroy((error) => {
+    if (error) console.log(error);
+    else {
+      res.clearCookie('UserAuth');
+      res.json({ status: 200 });
     }
-    res.clearCookie('UserAuth');
-    res.redirect('/');
   });
 });
 
+// router.post('/logout', (req, res) => {
+//   req.session.destroy((e) => {
+//     if (e) {
+//       console.log(e);
+//       return;
+//     }
+//     res.clearCookie('UserAuth');
+//     res.redirect('/');
+//   });
+// });
 module.exports = router;
 

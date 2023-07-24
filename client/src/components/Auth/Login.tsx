@@ -1,9 +1,10 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
-// const navigate = useNavigate();
+import {createLogger} from "vite";
 
 export function Login(): JSX.Element {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const navigate = useNavigate();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -18,10 +19,11 @@ export function Login(): JSX.Element {
                 }),
             });
             const result = await response.json();
+            console.log(result)
             if (result.status === 200) {
                 const userData = {id: result.id, email: result.email}
                 localStorage.setItem('userData', JSON.stringify(userData));
-                // navigate('/profile')
+                navigate(`/profile/${userData.id}`);
             } else if (result.status === 403) {
                 alert('Неверное имя пользователя или пароль!')
             }
@@ -30,7 +32,7 @@ export function Login(): JSX.Element {
         }
     }
 
-    const handleChange = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
 
