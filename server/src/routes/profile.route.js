@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {News, User} = require("../../db/models");
-router.get('/:id', async (req, res) => {
+router.get('/:id/posts', async (req, res) => {
     try {
         const data = await News.findAll({
             order: [['createdAt', 'DESC']],
@@ -27,6 +27,23 @@ router.get('/:id', async (req, res) => {
             lastName: item.User.lastName,
         }));
         res.json({ status: 200, data: formattedData });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: 500, message: 'Internal server error' });
+    }
+});
+
+router.get('/:id/user', async (req, res) => {
+    try {
+        const data = await User.findOne({
+            where: { id: req.params.id }
+        });
+        const formattedData = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+        };
+        console.log(formattedData)
+        res.json({ status: 200, formattedData });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: 500, message: 'Internal server error' });

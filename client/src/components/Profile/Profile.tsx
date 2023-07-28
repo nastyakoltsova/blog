@@ -25,14 +25,28 @@ export function Profile(): JSX.Element {
 
     const { id } = useParams();
     const [posts, setPosts] = useState();
+    const [name, setName] = useState();
 
     useEffect(() => {
         (async function() {
             try {
-                const response = await fetch(`http://localhost:3000/api/profile/${id}`);
+                const response = await fetch(`http://localhost:3000/api/profile/${id}/posts`);
                 const result = await response.json();
                 setPosts(result.data);
-                console.log(posts)
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async function() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/profile/${id}/user`);
+                const result = await response.json();
+                if (result.formattedData !== undefined) {
+                    setName(result.formattedData);
+                }
             } catch (error) {
                 console.log(error)
             }
@@ -47,8 +61,8 @@ export function Profile(): JSX.Element {
                     <div className={'flex w-1/4 h-4/5 m-5 border-2 border-amber-500 bg-blue-500 rounded-xl my-auto'}></div>
                     <div className={'flex justify-around w-2/3'}>
                         <div className={'flex flex-col mt-6 font-semibold'}>
-                            {/*<p>{posts[0].firstName} {posts[0].lastName}</p>*/}
-                            {/*<p>Birthday: {userData.birthday}</p>*/}
+                            { name !== undefined && <p>{name.lastName} {name.firstName}</p> }
+                            <p>Birthday: </p>
                             <button className={'bg-blue-500 w-56 rounded-md'}>Редактировать профиль</button>
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
