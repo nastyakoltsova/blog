@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
+const {logger} = require("sequelize/lib/utils/logger");
 
 router.post('/new', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -22,18 +23,23 @@ router.post('/new', async (req, res) => {
 
 router.post('/auth', async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body)
-
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return res.json({status: 401});
+  try {
+    const data = await User.findOne({ where: { email } });
+    if (data) {
+      const user = data.get({ plain: true });
+      const passCheck = await bcrypt.compare(password, user.password);
+      if (passCheck) {
+        req.session.user = user;
+        res.json({ id: user.id, email: user.email, status: 200 });
+      } else {
+        res.json({ status: 403 });
+      }
+    } else {
+      res.json({ status: 403 });
+    }
+  } catch (error) {
+    res.send(error);
   }
-  const passwordIsValid = await bcrypt.compare(password, user.password);
-  if (!passwordIsValid) {
-    return res.json({status: 401});
-  }
-  req.session.user = user;
-  res.json({status: 200, email, id: user.id});
 });
 
 router.post('/logout', (req, res) => {

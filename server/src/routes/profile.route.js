@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const {News, User} = require("../../db/models");
 router.get('/:id/posts', async (req, res) => {
+    // console.log(req.session.user)
     try {
         const data = await News.findAll({
             order: [['createdAt', 'DESC']],
@@ -39,10 +40,10 @@ router.get('/:id/user', async (req, res) => {
             where: { id: req.params.id }
         });
         const formattedData = {
+            id: data.id,
             firstName: data.firstName,
             lastName: data.lastName,
         };
-        console.log(formattedData)
         res.json({ status: 200, formattedData });
     } catch (error) {
         console.log(error);

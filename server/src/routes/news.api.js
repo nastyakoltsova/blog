@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
                 },
             ],
         });
+        console.log(data)
         const formattedData = data.map((item) => ({
             id: item.id,
             userId: item.userId,
@@ -27,12 +28,26 @@ router.get('/', async (req, res) => {
             firstName: item.User.firstName,
             lastName: item.User.lastName,
         }));
-        res.json({ status: 200, data: formattedData });
+        res.json({status: 200, data: formattedData});
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: 500, message: 'Internal server error' });
+        res.status(500).json({status: 500, message: 'Internal server error'});
     }
 });
+
+router.post('/new', async (req, res) => {
+    const id = req.session.user.id;
+    const { text } = req.body;
+    console.log(id)
+    try {
+        const user = (await News.create({ userId: id, newsText: text })).get({ plain: true });
+        console.log(user)
+        res.json({status: 200});
+
+    } catch (error) {
+        res.send(error);
+    }
+})
 
 
 module.exports = router;
