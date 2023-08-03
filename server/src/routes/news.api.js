@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
-const {News, User} = require('../../db/models');
+const {News, User, Following} = require('../../db/models');
+const {where} = require("sequelize");
 
 router.get('/', async (req, res) => {
     try {
@@ -52,6 +53,42 @@ router.delete('/delete/:id', async (req, res) => {
     const postId = req.params.id;
     await News.destroy({where: {id: postId}});
     res.end()
+})
+
+router.get('/mysubscriptions', async (req, res) => {
+    const user = req.session.user.id;
+    try {
+        const followsTo = await Following.findAll({where: {follower: user}});
+        const users = followsTo.map((item) => item.followsTo);
+        const posts = [];
+        for (let i = 0; i < users.length; i++) {
+            const userName = await User.findOne({where: {id: users[i]}});
+
+            const userObjects = {
+                userId: userName.dataValues.id,
+                firstName: userName.dataValues.firstName,
+                lastName: userName.dataValues.lastName,
+            };
+            const userPosts = await News.findAll({ where: { userId: users[i] } });
+            const postObjects = userPosts.map((post) => ({
+                postId: post.dataValues.id,
+                text: post.dataValues.newsText,
+                date: post.dataValues.createdAt.toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                }),
+            }));
+
+            posts.push({ ...userObjects, posts: postObjects });;
+        }
+        res.json({status: 200, data: posts});
+    }
+    catch (error) {
+        console.log(error)
+    }
 })
 
 module.exports = router;

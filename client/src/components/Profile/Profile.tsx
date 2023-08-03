@@ -7,9 +7,7 @@ export function Profile(): JSX.Element {
     const {id} = useParams();
     const [posts, setPosts] = useState([]);
     const [name, setName] = useState({});
-    const [follow, setFollow] = useState(false);
-    const [subscribersCount, setSubscribersCount] = useState(0);
-    const [subscriptionsCount, setSubscriptionsCount] = useState(0);
+    const [follow, setFollow] = useState({});
 
     useEffect(() => {
         (async function () {
@@ -53,7 +51,27 @@ export function Profile(): JSX.Element {
         })()
     }, [id]);
 
-
+    useEffect(() => {
+        (async function () {
+            try {
+                const response = await fetch(`http://localhost:3000/api/followings/${id}`, {
+                    credentials: 'include',
+                });
+                const result = await response.json();
+                if (result) {
+                    setFollow(result);
+                }
+                // console.log(result)
+                // if (result.isFollow === true) {
+                //     setFollow(true);
+                // } else {
+                //     setFollow(false)
+                // }
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, []);
 
     const handleDeletePost = async (id: number) => {
         await fetch(`http://localhost:3000/api/news/delete/${id}`, {
@@ -72,8 +90,11 @@ export function Profile(): JSX.Element {
                 headers: {'Content-Type': 'application/json'},
             })
             const data = await response.json();
-            setFollow(true);
-            console.log(data)
+            setFollow((prevFollow) => ({
+                isFollow: true,
+                followsToNum: prevFollow.followsToNum,
+                followersNum: prevFollow.followersNum + 1,
+            }));
         }
         catch (error) {
             console.log(error)
@@ -89,31 +110,16 @@ export function Profile(): JSX.Element {
                 headers: {'Content-Type': 'application/json'},
             })
             const data = await response.json();
-            setFollow(false);
+            setFollow((prevFollow) => ({
+                isFollow: false,
+                followsToNum: prevFollow.followsToNum,
+                followersNum: prevFollow.followersNum - 1,
+            }));
         }
         catch (error) {
             console.log(error)
         }
     }
-
-    useEffect(() => {
-        (async function () {
-            try {
-                const response = await fetch(`http://localhost:3000/api/followings/${id}`, {
-                    credentials: 'include',
-                });
-                const result = await response.json();
-                console.log(result)
-                if (result.isFollow === true) {
-                    setFollow(true);
-                } else {
-                    setFollow(false)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        })()
-    }, []);
 
     return (
         <>
@@ -128,15 +134,15 @@ export function Profile(): JSX.Element {
                             <p>Birthday: </p>
                             {name.isUser && <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать профиль</Link>}
 
-                            {!name.isUser && !follow && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
-                            {!name.isUser && follow && <button onClick={() => handleUnsubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
+                            {!name.isUser && !follow.isFollow && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
+                            {!name.isUser && follow.isFollow && <button onClick={() => handleUnsubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
 
 
 
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
-                            <p>Подписки: ХХХ</p>
-                            <p>Подписчики: ХХХ</p>
+                            <p>Подписки: {follow.followsToNum}</p>
+                            <p>Подписчики: {follow.followersNum}</p>
                         </div>
                     </div>
                 </div>
@@ -147,7 +153,7 @@ export function Profile(): JSX.Element {
                         <div key={el.id} className={'flex flex-col text-center mt-5 border-2 bg-blue-100 rounded-xl'}>
                             <div className={'justify-between flex ml-4 mt-2'}>
                                 <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
-                                <button onClick={() =>handleDeletePost(el.id)} className={'mr-3'}>Удалить пост</button>
+                                {name.isUser && <button onClick={() =>handleDeletePost(el.id)} className={'mr-3'}>Удалить пост</button>}
                             </div>
                             <div className={'self-start text-left m-4'}>
                                 {el.text}

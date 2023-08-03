@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {createLogger} from "vite";
 
 export function EditProfile(): JSX.Element {
     const [data, setData] = useState();
@@ -13,7 +12,6 @@ export function EditProfile(): JSX.Element {
                     credentials: 'include',
                 });
                 const user = await response.json();
-                console.log(user)
                 setUserId(user.userId);
             } catch (error) {
                 console.log(error)

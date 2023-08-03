@@ -6,11 +6,12 @@ router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const isFollow = (await Following.findOne({where: {follower: followerId, followsTo: id}}));
-        console.log(isFollow)
+        const followersNum = (await Following.findAll({where: {followsTo: id}})).length;
+        const followsToNum = (await Following.findAll({where: {follower: id}})).length;
         if (isFollow) {
-            res.json({isFollow: true})
+            res.json({isFollow: true, followersNum, followsToNum})
         } else {
-            res.json({isFollow: false})
+            res.json({isFollow: false, followersNum, followsToNum})
         }
     } catch (error) {
         console.log(error)
