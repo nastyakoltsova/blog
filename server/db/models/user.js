@@ -8,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.News, {
         foreignKey: 'userId',
       });
-      User.hasMany(models.Followings, {
+      User.hasMany(models.Following, {
         foreignKey: 'follower',
       });
-      User.hasMany(models.Followings, {
+      User.hasMany(models.Following, {
         foreignKey: 'followsTo',
       });
     }

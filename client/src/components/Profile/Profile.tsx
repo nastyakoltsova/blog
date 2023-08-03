@@ -1,11 +1,15 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PostForm} from "../FormNews/FormNews";
+import {render} from "react-dom";
 
 export function Profile(): JSX.Element {
     const {id} = useParams();
     const [posts, setPosts] = useState([]);
     const [name, setName] = useState({});
+    const [follow, setFollow] = useState(false);
+    const [subscribersCount, setSubscribersCount] = useState(0);
+    const [subscriptionsCount, setSubscriptionsCount] = useState(0);
 
     useEffect(() => {
         (async function () {
@@ -49,6 +53,8 @@ export function Profile(): JSX.Element {
         })()
     }, [id]);
 
+
+
     const handleDeletePost = async (id: number) => {
         await fetch(`http://localhost:3000/api/news/delete/${id}`, {
             method: 'DELETE',
@@ -57,14 +63,57 @@ export function Profile(): JSX.Element {
         fetchPosts()
     }
 
-    const handleSubscribe =  async (followsToId: string | undefined) => {
-        await fetch(`http://localhost:3000/api/followings/subscribe`, {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({followsToId}),
-            headers: {'Content-Type': 'application/json'},
-        })
+    const handleSubscribe = async (followsToId: string | undefined) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/followings/subscribe`, {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify({followsToId}),
+                headers: {'Content-Type': 'application/json'},
+            })
+            const data = await response.json();
+            setFollow(true);
+            console.log(data)
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
+
+    const handleUnsubscribe = async (followsToId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/followings/unsubscribe`, {
+                method: 'DELETE',
+                credentials: 'include',
+                body: JSON.stringify({followsToId}),
+                headers: {'Content-Type': 'application/json'},
+            })
+            const data = await response.json();
+            setFollow(false);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        (async function () {
+            try {
+                const response = await fetch(`http://localhost:3000/api/followings/${id}`, {
+                    credentials: 'include',
+                });
+                const result = await response.json();
+                console.log(result)
+                if (result.isFollow === true) {
+                    setFollow(true);
+                } else {
+                    setFollow(false)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, []);
 
     return (
         <>
@@ -78,7 +127,12 @@ export function Profile(): JSX.Element {
                             {name !== undefined && <p>{name.firstName} {name.lastName}</p>}
                             <p>Birthday: </p>
                             {name.isUser && <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать профиль</Link>}
-                            {!name.isUser && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
+
+                            {!name.isUser && !follow && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
+                            {!name.isUser && follow && <button onClick={() => handleUnsubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
+
+
+
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             <p>Подписки: ХХХ</p>

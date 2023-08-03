@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     followsTo: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Followings',
+    modelName: 'Following',
   });
   return Following;
 };
