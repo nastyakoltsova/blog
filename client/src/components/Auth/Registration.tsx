@@ -24,7 +24,7 @@ export function Registration(): JSX.Element {
             if (result.status === 201) {
                 const userData = { id: result.id, firstName: result.firstName, lastName: result.lastName,};
                 localStorage.setItem('userData', JSON.stringify(userData));
-                navigate('/profile')
+                navigate(`/profile/${userData.id}`)
             } else if (result.status === 403) {
                 alert('Такой пользователь уже существует!');
             }

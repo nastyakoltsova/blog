@@ -8,6 +8,12 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.News, {
         foreignKey: 'userId',
       });
+      User.hasMany(models.Followings, {
+        foreignKey: 'follower',
+      });
+      User.hasMany(models.Followings, {
+        foreignKey: 'followsTo',
+      });
     }
   }
 

@@ -39,10 +39,13 @@ router.get('/:id/user', async (req, res) => {
         const data = await User.findOne({
             where: { id: req.params.id }
         });
+        const isUser = (req.session.user.id === Number(req.params.id));
         const formattedData = {
             id: data.id,
             firstName: data.firstName,
             lastName: data.lastName,
+            email: data.email,
+            isUser,
         };
         res.json({ status: 200, formattedData });
     } catch (error) {
@@ -50,5 +53,28 @@ router.get('/:id/user', async (req, res) => {
         res.status(500).json({ status: 500, message: 'Internal server error' });
     }
 });
+
+router.get('/current_user', async (req, res) => {
+    const userId = req.session.user.id;
+    res.json({status: 200, userId})
+})
+
+router.patch('/edit', async (req, res) => {
+    const {firstName, lastName, email} = req.body;
+    console.log(req.body)
+    const user = await User.findOne({
+        where: { id: req.session.user.id },
+    });
+    try {
+        if (firstName.length === 0 || lastName.length === 0 || email.length === 0) {
+            return res.status(400).json({ error: 'Все поля должны быть заполнены' });
+        }
+        await User.update({ firstName, lastName, email }, { where: { id: user.id } });
+        res.json({ message: 'User updated' });
+    } catch (error) {
+        console.error('Ошибка при обновлении пользователя:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 
 module.exports = router;

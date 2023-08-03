@@ -21,12 +21,13 @@ export function PostForm({setPosts}) {
         setText('');
     };
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={'mt-2'}>
             <div className={'flex flex-col h-32 items-start content-start'}>
                 <textarea
                     className={'w-full h-full p-2 resize-none border-2 rounded-md'}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    placeholder='Что у вас нового?'
                 />
                 <div className={'flex self-end mt-2'}>
                     <button type="submit" className={'text-white bg-blue-500 px-4 py-2 rounded-md'}>
@@ -35,8 +36,6 @@ export function PostForm({setPosts}) {
                 </div>
             </div>
         </form>
-
-
     );
 }
 

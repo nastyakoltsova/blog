@@ -13,7 +13,6 @@ router.get('/', async (req, res) => {
                 },
             ],
         });
-        console.log(data)
         const formattedData = data.map((item) => ({
             id: item.id,
             userId: item.userId,
@@ -49,5 +48,10 @@ router.post('/new', async (req, res) => {
     }
 })
 
+router.delete('/delete/:id', async (req, res) => {
+    const postId = req.params.id;
+    await News.destroy({where: {id: postId}});
+    res.end()
+})
 
 module.exports = router;
