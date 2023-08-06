@@ -13,7 +13,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       newsText: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
+      },
+      photoPath: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

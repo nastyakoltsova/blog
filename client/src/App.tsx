@@ -6,6 +6,8 @@ import {Login} from "./components/Auth/Login";
 import {News} from "./components/News/News";
 import {MySubscriptions} from "./components/MySubscribtions/MySubscriptions";
 import {EditProfile} from "./components/EditProfile/EditProfile";
+import {ListOfSubscriptions} from "./components/ListOfSubscriptions/ListOfSubscriptions";
+import {ListOfSubscribers} from "./components/ListOfSubscribers/ListOfSubscribers";
 
 function App(): JSX.Element {
   return (
@@ -16,6 +18,8 @@ function App(): JSX.Element {
               <Route path="/login" element={<Login/>}/>
               <Route path="/news" element={<News/>}/>
               <Route path="/mysubscriptions" element={<MySubscriptions/>}/>
+              <Route path="/subscriptions/list/:id" element={<ListOfSubscriptions/>}/>
+              <Route path="/subscribers/list/:id" element={<ListOfSubscribers/>}/>
               <Route path="/profile/:id" element={<Profile/>}/>
               <Route path="profile/edit" element={<EditProfile/>}/>
           </Routes>

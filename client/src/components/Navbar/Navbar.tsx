@@ -15,6 +15,7 @@ export function Navbar(): JSX.Element {
             if (result.status === 200) {
                 localStorage.removeItem('userData');
                 setIsLoggedIn(false);
+                setUser(null);
             }
         } catch (error) {
             console.log(error);
@@ -23,19 +24,21 @@ export function Navbar(): JSX.Element {
 
     useEffect(() => {
         const userData = localStorage.getItem('userData');
+        console.log(userData)
         setIsLoggedIn(!!userData);
-        setUser(userData ? JSON.parse(userData) : null);;
-    }, [localStorage.getItem('userData')]);
+        console.log(isLoggedIn)
+        setUser(userData ? JSON.parse(userData) : null);
+    }, []);
 
-    useEffect(() => {
-        const userData = localStorage.getItem('userData');
-        setIsLoggedIn(!!userData);
-    }, [isLoggedIn]);
+    // useEffect(() => {
+    //     const userData = localStorage.getItem('userData');
+    //     setIsLoggedIn(!!userData);
+    // }, [isLoggedIn]);
 
     return (
         <>
-            <nav className={'bg-blue-300 h-screen w-52 fixed left-0'}>
-                <div className={'flex flex-col justify-around items-center h-full text-2xl text-blue-700'}>
+            <nav className={'bg-white h-screen w-52 fixed left-0 border-r-gray-400 border-r-2'}>
+                <div className={'flex flex-col justify-around items-center h-1/2 bg-white'}>
                     {isLoggedIn ? (
                         <>
                             <Link to={'/news'}>Новости</Link>

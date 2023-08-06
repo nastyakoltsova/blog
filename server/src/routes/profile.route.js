@@ -56,7 +56,7 @@ router.get('/:id/user', async (req, res) => {
 
 router.get('/current_user', async (req, res) => {
     const userId = req.session.user.id;
-    res.json({status: 200, userId})
+    res.json({status: 200, userId});
 })
 
 router.patch('/edit', async (req, res) => {

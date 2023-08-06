@@ -1,5 +1,47 @@
 const router = require('express').Router();
-const {Following} = require('../../db/models');
+const {Following, User, News} = require('../../db/models');
+
+router.get('/list/subscriptions/:id', async (req, res) => {
+    const followerId = req.params.id;
+    try {
+        const followsTo = await Following.findAll({ where: { follower: followerId } });
+        const users = [];
+        for (let i = 0; i < followsTo.length; i++) {
+            const userName = await User.findOne({ where: { id: followsTo[i].followsTo } });
+            const userObjects = {
+                userId: userName.dataValues.id,
+                firstName: userName.dataValues.firstName,
+                lastName: userName.dataValues.lastName,
+            };
+            users.push({ ...userObjects });
+        }
+        res.json({status: 200, users})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/list/subscribers/:id', async (req, res) => {
+    const followerId = req.params.id;
+    try {
+        const followers = await Following.findAll({ where: { followsTo: followerId } });
+        const users = [];
+        for (let i = 0; i < followers.length; i++) {
+            const userName = await User.findOne({ where: { id: followers[i].follower } });
+            const userObjects = {
+                userId: userName.dataValues.id,
+                firstName: userName.dataValues.firstName,
+                lastName: userName.dataValues.lastName,
+            };
+            users.push({ ...userObjects });
+        }
+        res.json({status: 200, users})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 router.get('/:id', async (req, res) => {
     const followerId = req.session.user.id;

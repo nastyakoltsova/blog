@@ -124,7 +124,7 @@ export function Profile(): JSX.Element {
     return (
         <>
             <div className={'pt-10'}>
-                <div className={'font-bold text-5xl flex w-2/4 mx-auto'}>Профиль</div>
+                <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-7'}>Профиль</div>
                 <div className={'flex w-2/4 h-56 m-5 border-2 bg-blue-100 rounded-xl mx-auto'}>
                     <div
                         className={'flex w-1/4 h-4/5 m-5 border-2 border-amber-500 bg-blue-500 rounded-xl my-auto'}></div>
@@ -141,16 +141,16 @@ export function Profile(): JSX.Element {
 
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
-                            <p>Подписки: {follow.followsToNum}</p>
-                            <p>Подписчики: {follow.followersNum}</p>
+                            <Link to={`/subscriptions/list/${id}`}>Подписки: {follow.followsToNum}</Link>
+                            <Link to={`/subscribers/list/${id}`}>Подписчики: {follow.followersNum}</Link>
                         </div>
                     </div>
                 </div>
                 <div className={'card-box flex flex-col justify-center w-2/4 mx-auto'}>
                     {name.isUser && <PostForm setPosts={fetchPosts}/>}
-                    <p className={'font-semibold text-2xl mt-5'}>Мои записи</p>
+                    <p className={'font-semibold text-2xl mb-5'}>Мои записи</p>
                     {posts && posts.map((el) =>
-                        <div key={el.id} className={'flex flex-col text-center mt-5 border-2 bg-blue-100 rounded-xl'}>
+                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-blue-100 rounded-xl'}>
                             <div className={'justify-between flex ml-4 mt-2'}>
                                 <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
                                 {name.isUser && <button onClick={() =>handleDeletePost(el.id)} className={'mr-3'}>Удалить пост</button>}

@@ -19,6 +19,7 @@ const profileRoute = require('./src/routes/profile.route');
 const followingsRoute = require('./src/routes/followings.route');
 
 const { PORT = 3000, COOKIE_SECRET = 'secretik' } = process.env;
+app.use('/photos', express.static(path.join(__dirname, './photos')));
 app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));

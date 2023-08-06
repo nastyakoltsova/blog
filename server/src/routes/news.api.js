@@ -1,7 +1,10 @@
 const router = require('express').Router();
+const multer = require('multer');
+const path = require('path');
 
 const {News, User, Following} = require('../../db/models');
-const {where} = require("sequelize");
+const upload = require('../middlewares/file');
+
 
 router.get('/', async (req, res) => {
     try {
@@ -18,6 +21,7 @@ router.get('/', async (req, res) => {
             id: item.id,
             userId: item.userId,
             text: item.newsText,
+            photo: item.photoPath,
             date: item.createdAt.toLocaleString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
@@ -35,19 +39,19 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/new', async (req, res) => {
+router.post('/new', upload.single('photo'), async (req, res) => {
     const id = req.session.user.id;
     const { text } = req.body;
-    console.log(id)
+    const photo = req.file.filename;
     try {
-        const user = (await News.create({ userId: id, newsText: text })).get({ plain: true });
-        console.log(user)
-        res.json({status: 200});
-
+        const photoPath =`/photos/${photo}`;
+        const user = (await News.create({ userId: id, newsText: text, photoPath: photoPath })).get({ plain: true });
+        console.log(user);
+        res.json({ status: 200 }); // Send the image URL in the response
     } catch (error) {
         res.send(error);
     }
-})
+});
 
 router.delete('/delete/:id', async (req, res) => {
     const postId = req.params.id;
@@ -58,12 +62,11 @@ router.delete('/delete/:id', async (req, res) => {
 router.get('/mysubscriptions', async (req, res) => {
     const user = req.session.user.id;
     try {
-        const followsTo = await Following.findAll({where: {follower: user}});
+        const followsTo = await Following.findAll({ where: { follower: user } });
         const users = followsTo.map((item) => item.followsTo);
         const posts = [];
         for (let i = 0; i < users.length; i++) {
-            const userName = await User.findOne({where: {id: users[i]}});
-
+            const userName = await User.findOne({ where: { id: users[i] } });
             const userObjects = {
                 userId: userName.dataValues.id,
                 firstName: userName.dataValues.firstName,
@@ -73,22 +76,30 @@ router.get('/mysubscriptions', async (req, res) => {
             const postObjects = userPosts.map((post) => ({
                 postId: post.dataValues.id,
                 text: post.dataValues.newsText,
-                date: post.dataValues.createdAt.toLocaleString('ru-RU', {
+                date: new Date(post.dataValues.createdAt),
+            }));
+            posts.push({ ...userObjects, posts: postObjects });
+        }
+        posts.sort((a, b) => b.posts[0].date - a.posts[0].date);
+        const formattedPosts = posts.map((post) => ({
+            ...post,
+            posts: post.posts.map((p) => ({
+                postId: p.postId,
+                text: p.text,
+                date: p.date.toLocaleString('ru-RU', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
                 }),
-            }));
+            })),
+        }));
+        res.json({ status: 200, data: formattedPosts });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
-            posts.push({ ...userObjects, posts: postObjects });;
-        }
-        res.json({status: 200, data: posts});
-    }
-    catch (error) {
-        console.log(error)
-    }
-})
 
 module.exports = router;

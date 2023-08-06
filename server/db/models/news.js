@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 
   News.init({
     userId: DataTypes.INTEGER,
-    newsText: DataTypes.TEXT
+    newsText: DataTypes.STRING,
+    photoPath: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'News',

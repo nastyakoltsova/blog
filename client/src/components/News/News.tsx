@@ -13,6 +13,7 @@ export function News(): JSX.Element {
                 });
                 const result = await response.json();
                 setPosts(result.data);
+                console.log(posts)
             } catch (error) {
                 console.log(error)
             }
@@ -34,11 +35,13 @@ export function News(): JSX.Element {
     return (
         <>
             <div className={'pt-10'}>
-                <div className={'font-bold text-5xl flex w-2/4 mx-auto'}>Новости</div>
+                <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-5'}>Новости</div>
                 <div className={'card-box flex flex-col justify-center w-2/4 mx-auto'}>
-                    <PostForm setPosts={fetchPosts}/>
+                    <div className={'mb-5'}>
+                        <PostForm setPosts={fetchPosts}/>
+                    </div>
                     {posts && posts.map((el) =>
-                        <div key={el.id} className={'flex flex-col text-center mt-5 border-2 bg-blue-100 rounded-xl'}>
+                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-blue-100 rounded-xl'}>
                             <div className={'self-start ml-4 mt-2 font-bold'}>
                                 <Link to={`../profile/${el.userId}`}>{el.firstName} {el.lastName}</Link>
                             </div>
@@ -48,6 +51,11 @@ export function News(): JSX.Element {
                             <div className={'self-end mr-4 font-light'}>
                                 {el.date}
                             </div>
+                            {el.photo && (
+                                <div className={'flex justify-center'}>
+                                    <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
