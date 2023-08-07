@@ -17,6 +17,7 @@ router.get('/:id/posts', async (req, res) => {
             id: item.id,
             userId: item.userId,
             text: item.newsText,
+            photo: item.photoPath,
             date: item.createdAt.toLocaleString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',

@@ -48,14 +48,14 @@ export function News(): JSX.Element {
                             <div className={'self-start text-left m-4'}>
                                 {el.text}
                             </div>
-                            <div className={'self-end mr-4 font-light'}>
-                                {el.date}
-                            </div>
                             {el.photo && (
-                                <div className={'flex justify-center'}>
+                                <div className={'flex justify-center mb-2'}>
                                     <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
                                 </div>
                             )}
+                            <div className={'self-end mr-4 font-light'}>
+                                {el.date}
+                            </div>
                         </div>
                     )}
                 </div>

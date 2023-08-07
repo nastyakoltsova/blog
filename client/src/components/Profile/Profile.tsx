@@ -1,7 +1,6 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PostForm} from "../FormNews/FormNews";
-import {render} from "react-dom";
 
 export function Profile(): JSX.Element {
     const {id} = useParams();
@@ -125,7 +124,7 @@ export function Profile(): JSX.Element {
         <>
             <div className={'pt-10'}>
                 <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-7'}>Профиль</div>
-                <div className={'flex w-2/4 h-56 m-5 border-2 bg-blue-100 rounded-xl mx-auto'}>
+                <div className={'flex w-2/4 h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'}>
                     <div
                         className={'flex w-1/4 h-4/5 m-5 border-2 border-amber-500 bg-blue-500 rounded-xl my-auto'}></div>
                     <div className={'flex justify-around w-2/3'}>
@@ -133,12 +132,8 @@ export function Profile(): JSX.Element {
                             {name !== undefined && <p>{name.firstName} {name.lastName}</p>}
                             <p>Birthday: </p>
                             {name.isUser && <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать профиль</Link>}
-
                             {!name.isUser && !follow.isFollow && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
                             {!name.isUser && follow.isFollow && <button onClick={() => handleUnsubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
-
-
-
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             <Link to={`/subscriptions/list/${id}`}>Подписки: {follow.followsToNum}</Link>
@@ -150,7 +145,7 @@ export function Profile(): JSX.Element {
                     {name.isUser && <PostForm setPosts={fetchPosts}/>}
                     <p className={'font-semibold text-2xl mb-5'}>Мои записи</p>
                     {posts && posts.map((el) =>
-                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-blue-100 rounded-xl'}>
+                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
                             <div className={'justify-between flex ml-4 mt-2'}>
                                 <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
                                 {name.isUser && <button onClick={() =>handleDeletePost(el.id)} className={'mr-3'}>Удалить пост</button>}
@@ -158,8 +153,13 @@ export function Profile(): JSX.Element {
                             <div className={'self-start text-left m-4'}>
                                 {el.text}
                             </div>
-                            <div className={'flex ml-4 justify-between mb-2 font-light'}>
-                                <p>{el.date}</p>
+                            {el.photo && (
+                                <div className={'flex justify-center mb-2'}>
+                                    <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
+                                </div>
+                            )}
+                            <div className={'self-end mr-4 font-light'}>
+                                {el.date}
                             </div>
                         </div>
                     )}

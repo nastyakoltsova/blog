@@ -42,16 +42,17 @@ router.get('/', async (req, res) => {
 router.post('/new', upload.single('photo'), async (req, res) => {
     const id = req.session.user.id;
     const { text } = req.body;
-    const photo = req.file.filename;
+    const photo = req.file ? req.file.filename : null;
     try {
-        const photoPath =`/photos/${photo}`;
+        const photoPath = photo ? `/photos/${photo}` : null;
         const user = (await News.create({ userId: id, newsText: text, photoPath: photoPath })).get({ plain: true });
         console.log(user);
-        res.json({ status: 200 }); // Send the image URL in the response
+        res.json({ status: 200 }); // Отправьте URL изображения в ответе
     } catch (error) {
         res.send(error);
     }
 });
+
 
 router.delete('/delete/:id', async (req, res) => {
     const postId = req.params.id;
