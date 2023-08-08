@@ -63,9 +63,7 @@ export function PostForm({setPosts}) {
         </div>
     );
 
-
     const handleIconClick = () => {
-        // На клик иконку вызываем клик на инпуте
         const inputFile = document.getElementById('photo-input');
         inputFile.click();
     }
@@ -96,7 +94,5 @@ export function PostForm({setPosts}) {
                 </div>
             </form>
         </div>
-
-
     );
 }

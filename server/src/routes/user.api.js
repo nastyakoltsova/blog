@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
-const {logger} = require("sequelize/lib/utils/logger");
+const path = require('path');
+
+const defaultImagePath = '/photos/default.jpeg';
 
 router.post('/new', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -10,7 +12,7 @@ router.post('/new', async (req, res) => {
     const userCheck = await User.findOne({ where: { email } });
     if (!userCheck) {
       const hashPass = await bcrypt.hash(password, 10);
-      const user = (await User.create({ firstName, lastName, email, password: hashPass })).get({ plain: true });
+      const user = (await User.create({ firstName, lastName, email, avatar: defaultImagePath, password: hashPass })).get({ plain: true });
       req.session.user = user;
       res.json({ status: 201, id: user.id, firstName: user.firstName });
     } else {

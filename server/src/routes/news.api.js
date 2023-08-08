@@ -1,6 +1,4 @@
 const router = require('express').Router();
-const multer = require('multer');
-const path = require('path');
 
 const {News, User, Following} = require('../../db/models');
 const upload = require('../middlewares/file');
@@ -47,7 +45,7 @@ router.post('/new', upload.single('photo'), async (req, res) => {
         const photoPath = photo ? `/photos/${photo}` : null;
         const user = (await News.create({ userId: id, newsText: text, photoPath: photoPath })).get({ plain: true });
         console.log(user);
-        res.json({ status: 200 }); // Отправьте URL изображения в ответе
+        res.json({ status: 200 });
     } catch (error) {
         res.send(error);
     }

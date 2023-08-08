@@ -46,6 +46,7 @@ router.get('/:id/user', async (req, res) => {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
+            avatar: data.avatar,
             isUser,
         };
         res.json({ status: 200, formattedData });
