@@ -33,6 +33,7 @@ router.get('/list/subscribers/:id', async (req, res) => {
                 userId: userName.dataValues.id,
                 firstName: userName.dataValues.firstName,
                 lastName: userName.dataValues.lastName,
+                avatar: userName.dataValues.avatar,
             };
             users.push({ ...userObjects });
         }

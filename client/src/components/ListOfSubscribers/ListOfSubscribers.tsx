@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 
 export function ListOfSubscribers(): JSX.Element {
@@ -25,12 +25,14 @@ export function ListOfSubscribers(): JSX.Element {
                 <div className={'font-bold mb-7 text-5xl flex w-2/4 mx-auto'}>Подписчики</div>
                 <div className={'card-box flex flex-col justify-center w-2/4 mx-auto'}>
                     {subscribers && subscribers.map((el) => (
-                        <div key={el.userId}
-                             className={'flex flex-col text-center mb-7 border-2 rounded-md bg-blue-100'}>
-                            <div className={'self-start ml-4 mt-2 font-bold'}>
-                                <Link to={`/profile/${el.userId}`}>
-                                    {el.firstName} {el.lastName}
-                                </Link>
+                        <div key={el.userId} className={'flex text-center mb-3 h-16 border-2 rounded-md bg-blue-100'}>
+                            <div className="flex items-center">
+                                <img src={`http://localhost:3000${el.avatar}`} className="max-h-12 rounded-full mx-auto ml-5" />
+                                <div className={'ml-4 text-lg font-bold'}>
+                                    <Link to={`/profile/${el.userId}`}>
+                                        {el.firstName} {el.lastName}
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     ))}

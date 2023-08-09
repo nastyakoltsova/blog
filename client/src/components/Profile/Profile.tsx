@@ -1,6 +1,7 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PostForm} from "../FormNews/FormNews";
+import {PostCard} from "../../PostCard/PostCard";
 
 export function Profile(): JSX.Element {
     const {id} = useParams();
@@ -61,12 +62,6 @@ export function Profile(): JSX.Element {
                 if (result) {
                     setFollow(result);
                 }
-                // console.log(result)
-                // if (result.isFollow === true) {
-                //     setFollow(true);
-                // } else {
-                //     setFollow(false)
-                // }
             } catch (error) {
                 console.log(error)
             }
@@ -155,24 +150,33 @@ export function Profile(): JSX.Element {
         <>
             <div className={'pt-10'}>
                 <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-7'}>Профиль</div>
-                <div className={'flex h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'} style={{ width: '48rem' }}>
+                <div className={'flex h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'} style={{width: '48rem'}}>
                     {name.isUser &&
-                        <label htmlFor="upload-photo" className="h-52 w-52 flex items-center justify-center">
-                            <input
-                                type="file"
-                                id="upload-photo"
-                                className="hidden"
-                                onChange={handlePhotoUpload}
-                            />
-                            <img
-                                src={`http://localhost:3000${name.avatar}`}
-                                className="h-48 w-48 rounded-full object-cover"
-                                alt="Uploaded Avatar"
-                            />
+
+                        <label htmlFor="upload-photo" className="h-48 w-48 flex items-center justify-center">
+                            <div className={'flex flex-col mt-7'}>
+                                <div>
+                                    <input
+                                        type="file"
+                                        id="upload-photo"
+                                        className="hidden"
+                                        onChange={handlePhotoUpload}
+                                    />
+                                    <img
+                                        src={`http://localhost:3000${name.avatar}`}
+                                        className="h-44 w-44 rounded-full object-cover"
+                                        alt="Uploaded Avatar"
+                                    />
+                                </div>
+                                <div className={'text-xs text-gray-400 text-center'}>
+                                    Нажмите чтобы изменить
+                                </div>
+                            </div>
                         </label>
                     }
                     {!name.isUser &&
-                        <img src={`http://localhost:3000${name.avatar}`} className="h-48 w-48 object-cover rounded-full mx-auto my-auto max-h-full max-w-full"/>
+                        <img src={`http://localhost:3000${name.avatar}`}
+                             className="h-48 w-48 object-cover rounded-full mx-auto my-auto max-h-full max-w-full"/>
                     }
                     <div className={'flex justify-around w-2/3'}>
                         <div className={'flex flex-col mt-6 font-semibold'}>
@@ -196,28 +200,31 @@ export function Profile(): JSX.Element {
                     {name.isUser && <PostForm setPosts={fetchPosts}/>}
                     <p className={'font-semibold text-2xl mb-5'}>Мои записи</p>
                     {posts && posts.map((el) =>
-                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
-                            <div className={'justify-between flex ml-4 mt-2'}>
-                                <div className={'flex'}>
-                                    <img src={`http://localhost:3000${name.avatar}`} className={'max-h-12 rounded-full mx-auto mr-5'}/>
-                                    <div className={'flex flex-col'}>
-                                        <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
-                                        <div className={'font-light self-start'}>{el.date}</div>
-                                    </div>
-                                </div>
+                            <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
+                                <PostCard key={el.id} post={el} handleDeletePost={handleDeletePost}/>
                             </div>
-                            <div className={'self-start text-left m-4'}>
-                                {el.text}
-                            </div>
-                            {el.photo && (
-                                <div className={'flex justify-center mb-2'}>
-                                    <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
-                                </div>
-                            )}
-                            {name.isUser &&
-                                <button onClick={() => handleDeletePost(el.id)} className={'mr-3 self-end mb-2'}>Удалить
-                                    пост</button>}
-                        </div>
+                        // <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
+                        //     <div className={'justify-between flex ml-4 mt-2'}>
+                        //         <div className={'flex'}>
+                        //             <img src={`http://localhost:3000${name.avatar}`} className={'max-h-12 rounded-full mx-auto mr-5'}/>
+                        //             <div className={'flex flex-col'}>
+                        //                 <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
+                        //                 <div className={'font-light self-start'}>{el.date}</div>
+                        //             </div>
+                        //         </div>
+                        //     </div>
+                        //     <div className={'self-start text-left m-4'}>
+                        //         {el.text}
+                        //     </div>
+                        //     {el.photo && (
+                        //         <div className={'flex justify-center mb-2'}>
+                        //             <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
+                        //         </div>
+                        //     )}
+                        //     {name.isUser &&
+                        //         <button onClick={() => handleDeletePost(el.id)} className={'mr-3 self-end mb-2'}>Удалить
+                        //             пост</button>}
+                        // </div>
                     )}
                 </div>
             </div>

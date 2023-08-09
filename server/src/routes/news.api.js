@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
             include: [
                 {
                     model: User,
-                    attributes: ['firstName', 'lastName'],
+                    attributes: ['firstName', 'lastName', 'avatar'],
                 },
             ],
         });
@@ -29,7 +29,9 @@ router.get('/', async (req, res) => {
             }),
             firstName: item.User.firstName,
             lastName: item.User.lastName,
+            avatar: item.User.avatar,
         }));
+        console.log(formattedData)
         res.json({status: 200, data: formattedData});
     } catch (error) {
         console.log(error);
@@ -64,41 +66,41 @@ router.get('/mysubscriptions', async (req, res) => {
         const followsTo = await Following.findAll({ where: { follower: user } });
         const users = followsTo.map((item) => item.followsTo);
         const posts = [];
+
         for (let i = 0; i < users.length; i++) {
             const userName = await User.findOne({ where: { id: users[i] } });
-            const userObjects = {
-                userId: userName.dataValues.id,
-                firstName: userName.dataValues.firstName,
-                lastName: userName.dataValues.lastName,
-            };
+
             const userPosts = await News.findAll({ where: { userId: users[i] } });
-            const postObjects = userPosts.map((post) => ({
-                postId: post.dataValues.id,
-                text: post.dataValues.newsText,
-                date: new Date(post.dataValues.createdAt),
-            }));
-            posts.push({ ...userObjects, posts: postObjects });
+
+            for (const post of userPosts) {
+                const postObject = {
+                    userId: userName.dataValues.id,
+                    firstName: userName.dataValues.firstName,
+                    lastName: userName.dataValues.lastName,
+                    avatar: userName.dataValues.avatar,
+                    postId: post.dataValues.id,
+                    text: post.dataValues.newsText,
+                    date: new Date(post.dataValues.createdAt).toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }),
+                };
+                posts.push(postObject);
+            }
         }
-        posts.sort((a, b) => b.posts[0].date - a.posts[0].date);
-        const formattedPosts = posts.map((post) => ({
-            ...post,
-            posts: post.posts.map((p) => ({
-                postId: p.postId,
-                text: p.text,
-                date: p.date.toLocaleString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                }),
-            })),
-        }));
-        res.json({ status: 200, data: formattedPosts });
+
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        console.log(posts)
+        res.json({ status: 200, data: posts });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ status: 500, error: 'Internal Server Error' });
     }
 });
+
 
 
 module.exports = router;

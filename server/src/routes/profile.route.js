@@ -9,7 +9,7 @@ router.get('/:id/posts', async (req, res) => {
             include: [
                 {
                     model: User,
-                    attributes: ['firstName', 'lastName'],
+                    attributes: ['firstName', 'lastName', 'avatar'],
                 },
             ],
             where: { userId: req.params.id }
@@ -84,6 +84,9 @@ router.patch('/edit', async (req, res) => {
 
 router.patch('/changeAvatar', upload.single('avatar'), async (req, res) => {
     const user = req.session.user;
+    if (!req.file) {
+        return res.status(400).json({ error: 'No avatar file provided' });
+    }
     const avatar = req.file.filename;
     try {
         await User.update({ avatar: `/photos/${avatar}` }, { where: { id: user.id } });
