@@ -49,7 +49,7 @@ export function Profile(): JSX.Element {
                 console.log(error)
             }
         })()
-    }, [id]);
+    }, [id, name.avatar]);
 
     useEffect(() => {
         (async function () {
@@ -95,8 +95,7 @@ export function Profile(): JSX.Element {
                 followsToNum: prevFollow.followsToNum,
                 followersNum: prevFollow.followersNum + 1,
             }));
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error)
         }
     }
@@ -115,27 +114,77 @@ export function Profile(): JSX.Element {
                 followsToNum: prevFollow.followsToNum,
                 followersNum: prevFollow.followersNum - 1,
             }));
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error)
         }
     }
+
+    const handlePhotoUpload = async () => {
+        const fileInput = document.getElementById('upload-photo');
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/profile/changeAvatar`, {
+                method: 'PATCH',
+                credentials: 'include',
+                body: formData,
+            })
+            const data = await response.json();
+            if (response.ok) {
+                // Обновление состояния
+                setName((prevName) => ({
+                    ...prevName,
+                    avatar: data.newAvatar
+                }));
+
+                // // Сохранение URL аватара в localStorage
+                // localStorage.setItem('avatar', data.newAvatar);
+            } else {
+                console.log('Ошибка при загрузке фото');
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     return (
         <>
             <div className={'pt-10'}>
                 <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-7'}>Профиль</div>
-                <div className={'flex w-2/4 h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'}>
-                    <div className={'flex w-1/4 h-4/5 m-5 bg-blue-500 rounded-xl my-auto'}>
-                        <img src={`http://localhost:3000${name.avatar}`} className={'w-full mx-auto'}/>
-                    </div>
+                <div className={'flex h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'} style={{ width: '48rem' }}>
+                    {name.isUser &&
+                        <label htmlFor="upload-photo" className="h-52 w-52 flex items-center justify-center">
+                            <input
+                                type="file"
+                                id="upload-photo"
+                                className="hidden"
+                                onChange={handlePhotoUpload}
+                            />
+                            <img
+                                src={`http://localhost:3000${name.avatar}`}
+                                className="h-48 w-48 rounded-full object-cover"
+                                alt="Uploaded Avatar"
+                            />
+                        </label>
+                    }
+                    {!name.isUser &&
+                        <img src={`http://localhost:3000${name.avatar}`} className="h-48 w-48 object-cover rounded-full mx-auto my-auto max-h-full max-w-full"/>
+                    }
                     <div className={'flex justify-around w-2/3'}>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             {<p>{name.firstName} {name.lastName}</p>}
                             <p>Birthday: </p>
-                            {name.isUser && <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать профиль</Link>}
-                            {!name.isUser && !follow.isFollow && <button onClick={() => handleSubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
-                            {!name.isUser && follow.isFollow && <button onClick={() => handleUnsubscribe(id)} className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
+                            {name.isUser &&
+                                <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать
+                                    профиль</Link>}
+                            {!name.isUser && !follow.isFollow && <button onClick={() => handleSubscribe(id)}
+                                                                         className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
+                            {!name.isUser && follow.isFollow && <button onClick={() => handleUnsubscribe(id)}
+                                                                        className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             <Link to={`/subscriptions/list/${id}`}>Подписки: {follow.followsToNum}</Link>
@@ -149,8 +198,13 @@ export function Profile(): JSX.Element {
                     {posts && posts.map((el) =>
                         <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
                             <div className={'justify-between flex ml-4 mt-2'}>
-                                <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
-                                {name.isUser && <button onClick={() => handleDeletePost(el.id)} className={'mr-3'}>Удалить пост</button>}
+                                <div className={'flex'}>
+                                    <img src={`http://localhost:3000${name.avatar}`} className={'max-h-12 rounded-full mx-auto mr-5'}/>
+                                    <div className={'flex flex-col'}>
+                                        <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
+                                        <div className={'font-light self-start'}>{el.date}</div>
+                                    </div>
+                                </div>
                             </div>
                             <div className={'self-start text-left m-4'}>
                                 {el.text}
@@ -160,9 +214,9 @@ export function Profile(): JSX.Element {
                                     <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
                                 </div>
                             )}
-                            <div className={'self-end mr-4 font-light'}>
-                                {el.date}
-                            </div>
+                            {name.isUser &&
+                                <button onClick={() => handleDeletePost(el.id)} className={'mr-3 self-end mb-2'}>Удалить
+                                    пост</button>}
                         </div>
                     )}
                 </div>

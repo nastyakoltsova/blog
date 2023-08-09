@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const {News, User} = require("../../db/models");
+const upload = require('../middlewares/file');
 router.get('/:id/posts', async (req, res) => {
     // console.log(req.session.user)
     try {
@@ -27,6 +28,7 @@ router.get('/:id/posts', async (req, res) => {
             }),
             firstName: item.User.firstName,
             lastName: item.User.lastName,
+            avatar: item.User.avatar,
         }));
         res.json({ status: 200, data: formattedData });
     } catch (error) {
@@ -78,5 +80,19 @@ router.patch('/edit', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
+
+router.patch('/changeAvatar', upload.single('avatar'), async (req, res) => {
+    const user = req.session.user;
+    const avatar = req.file.filename;
+    try {
+        await User.update({ avatar: `/photos/${avatar}` }, { where: { id: user.id } });
+        res.json({ message: 'User updated', newAvatar: avatar });
+    } catch (error) {
+        console.error('Ошибка при обновлении аватара:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
 
 module.exports = router;
