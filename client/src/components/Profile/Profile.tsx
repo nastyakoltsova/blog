@@ -148,7 +148,7 @@ export function Profile(): JSX.Element {
 
     return (
         <>
-            <div className={'pt-10'}>
+            <div className={'pt-20'}>
                 <div className={'font-bold text-5xl flex w-2/4 mx-auto mb-7'}>Профиль</div>
                 <div className={'flex h-56 m-5 border-2 bg-gray-100 rounded-xl mx-auto'} style={{width: '48rem'}}>
                     {name.isUser &&

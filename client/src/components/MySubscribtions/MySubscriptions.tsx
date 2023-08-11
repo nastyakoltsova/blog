@@ -20,7 +20,7 @@ export function MySubscriptions(): JSX.Element {
     }, []);
 
     return (
-        <div className="pt-10">
+        <div className="pt-20">
             <div className="font-bold mb-7 text-5xl flex w-2/4 mx-auto">Мои подписки</div>
             <div className="card-box flex flex-col justify-center w-2/4 mx-auto">
                 {posts.map((post) => (

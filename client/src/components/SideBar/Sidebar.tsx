@@ -1,9 +1,9 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 
-export function Navbar(): JSX.Element {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState(null);
+export function Sidebar({isLoggedIn, setIsLoggedIn, user, setUser}): JSX.Element {
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [user, setUser] = useState(null);
     const userLogout = async () => {
         try {
             const response = await fetch('http://localhost:3000/api/users/logout', {
@@ -24,21 +24,17 @@ export function Navbar(): JSX.Element {
 
     useEffect(() => {
         const userData = localStorage.getItem('userData');
-        console.log(userData)
-        setIsLoggedIn(!!userData);
-        console.log(isLoggedIn)
-        setUser(userData ? JSON.parse(userData) : null);
-    }, []);
-
-    // useEffect(() => {
-    //     const userData = localStorage.getItem('userData');
-    //     setIsLoggedIn(!!userData);
-    // }, [isLoggedIn]);
+        if (userData) {
+            const parsedUserData = JSON.parse(userData);
+            setIsLoggedIn(true);
+            setUser(parsedUserData);
+        }
+    }, [setIsLoggedIn, setUser]);
 
     return (
         <>
             <nav className={'bg-white h-screen w-52 fixed left-0 border-r-gray-400 border-r-2'}>
-                <div className={'flex flex-col justify-around items-center h-1/2 bg-white'}>
+                <div className={'flex flex-col justify-around items-center h-1/2 bg-white mt-52'}>
                     {isLoggedIn ? (
                         <>
                             <Link to={'/news'}>Новости</Link>
@@ -52,7 +48,6 @@ export function Navbar(): JSX.Element {
                         </>
                     ) : (
                         <>
-                            <Link to={'/news'}>Новости</Link>
                             <Link to={'/login'}>Вход</Link>
                             <Link to={'/registration'}>Регистрация</Link>
                         </>

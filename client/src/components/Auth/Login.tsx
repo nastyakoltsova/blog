@@ -2,8 +2,8 @@ import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {createLogger} from "vite";
 
-export function Login(): JSX.Element {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+export function Login({setIsLoggedIn, setUser}): JSX.Element {
+    const [formData, setFormData] = useState({email: '', password: ''});
     const navigate = useNavigate();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -24,6 +24,8 @@ export function Login(): JSX.Element {
                 const userData = {id: result.id, email: result.email}
                 localStorage.setItem('userData', JSON.stringify(userData));
                 navigate(`/profile/${userData.id}`);
+                setIsLoggedIn(true);
+                setUser(userData)
             } else if (result.status === 403) {
                 alert('Неверное имя пользователя или пароль!')
             }
@@ -33,21 +35,19 @@ export function Login(): JSX.Element {
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setFormData({ ...formData, [event.target.name]: event.target.value });
+        setFormData({...formData, [event.target.name]: event.target.value});
     };
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+            <div className="flex min-h-screen flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         Вход
                     </h2>
                 </div>
-
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
+                    <form className="space-y-6" method="POST" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Email
@@ -101,7 +101,8 @@ export function Login(): JSX.Element {
                     <p className="mt-10 text-center text-sm text-gray-500">
                         Еще нет аккаунта?
                         <br/>
-                        <Link to={'/registration'} className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                        <Link to={'/registration'}
+                              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                             Регистрация
                         </Link>
                     </p>

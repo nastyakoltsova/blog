@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 export function PostCard({ post, handleDeletePost }): JSX.Element {
     const [userId, setUserId] = useState();
-    console.log(post)
 
     useEffect(() => {
         async function fetchCurrentUser() {

@@ -6,6 +6,15 @@ body {
     @apply bg-white ml-14
 }
 
+.navbar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999; /* set a higher z-index to ensure it is on top */
+}
+
+
 /*:root {*/
 /*  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
 /*  line-height: 1.5;*/
