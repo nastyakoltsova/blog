@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
-
+interface subscribersData {
+    userId: number,
+    avatar: string,
+    firstName: string,
+    lastName: string
+}
 export function ListOfSubscribers(): JSX.Element {
     const {id} = useParams();
-    const [subscribers, setSubscribers] = useState([]);
+    const [subscribers, setSubscribers] = useState<subscribersData[]>([]);
 
     useEffect(() => {
         (async function () {

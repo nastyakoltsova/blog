@@ -1,8 +1,17 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import {createLogger} from "vite";
 
-export function Login({setIsLoggedIn, setUser}): JSX.Element {
+interface UserData {
+    id: string;
+    email: string;
+}
+
+interface LoginProps {
+    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+    setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
+}
+
+export function Login({setIsLoggedIn, setUser}: LoginProps): JSX.Element {
     const [formData, setFormData] = useState({email: '', password: ''});
     const navigate = useNavigate();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -21,7 +30,7 @@ export function Login({setIsLoggedIn, setUser}): JSX.Element {
             const result = await response.json();
             console.log(result)
             if (result.status === 200) {
-                const userData = {id: result.id, email: result.email}
+                const userData: UserData = {id: result.id, email: result.email}
                 localStorage.setItem('userData', JSON.stringify(userData));
                 navigate(`/profile/${userData.id}`);
                 setIsLoggedIn(true);
@@ -60,22 +69,16 @@ export function Login({setIsLoggedIn, setUser}): JSX.Element {
                                     autoComplete="email"
                                     onChange={handleChange}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <div className="flex items-center justify-between">
-                                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Пароль
-                                </label>
-                                <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
-                            </div>
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                                Пароль
+                            </label>
+
                             <div className="mt-2">
                                 <input
                                     id="password"
@@ -84,14 +87,14 @@ export function Login({setIsLoggedIn, setUser}): JSX.Element {
                                     onChange={handleChange}
                                     autoComplete="current-password"
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="flex w-full justify-center rounded-md bg-blue-300 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Войти
                             </button>
@@ -102,7 +105,7 @@ export function Login({setIsLoggedIn, setUser}): JSX.Element {
                         Еще нет аккаунта?
                         <br/>
                         <Link to={'/registration'}
-                              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                              className="font-semibold leading-6 text-blue-400 hover:text-blue-500">
                             Регистрация
                         </Link>
                     </p>

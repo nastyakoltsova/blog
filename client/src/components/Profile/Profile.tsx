@@ -3,11 +3,37 @@ import React, {useEffect, useState} from "react";
 import {PostForm} from "../FormNews/FormNews";
 import {PostCard} from "../../PostCard/PostCard";
 
+interface ProfilePost {
+    id: number;
+    userId: number;
+    text: string;
+    firstName: string;
+    lastName: string;
+    photo: string;
+    avatar: string;
+    date: string
+}
+
+interface UserProfile {
+    id: number;
+    isUser: boolean;
+    avatar: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+interface FollowInfo {
+    isFollow: boolean;
+    followsToNum: number;
+    followersNum: number;
+}
+
 export function Profile(): JSX.Element {
     const {id} = useParams();
-    const [posts, setPosts] = useState([]);
-    const [name, setName] = useState({});
-    const [follow, setFollow] = useState({});
+    const [posts, setPosts] = useState<ProfilePost[]>([]);
+    const [name, setName] = useState<UserProfile>({ id: 0, isUser: false, avatar: '', firstName: '', lastName: '', email: '' });
+    const [follow, setFollow] = useState<FollowInfo>({ isFollow: false, followsToNum: 0, followersNum: 0 });
 
     useEffect(() => {
         (async function () {
@@ -44,8 +70,8 @@ export function Profile(): JSX.Element {
                 const result = await response.json();
                 if (result.formattedData !== undefined) {
                     setName(result.formattedData);
+                    console.log(name)
                 }
-                console.log(name)
             } catch (error) {
                 console.log(error)
             }
@@ -95,7 +121,7 @@ export function Profile(): JSX.Element {
         }
     }
 
-    const handleUnsubscribe = async (followsToId) => {
+    const handleUnsubscribe = async (followsToId: number) => {
         try {
             const response = await fetch(`http://localhost:3000/api/followings/unsubscribe`, {
                 method: 'DELETE',
@@ -135,8 +161,6 @@ export function Profile(): JSX.Element {
                     avatar: data.newAvatar
                 }));
 
-                // // Сохранение URL аватара в localStorage
-                // localStorage.setItem('avatar', data.newAvatar);
             } else {
                 console.log('Ошибка при загрузке фото');
             }
@@ -181,14 +205,13 @@ export function Profile(): JSX.Element {
                     <div className={'flex justify-around w-2/3'}>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             {<p>{name.firstName} {name.lastName}</p>}
-                            <p>Birthday: </p>
                             {name.isUser &&
-                                <Link to={'/profile/edit'} className={'text-center bg-blue-500 w-56 rounded-md'}>Редактировать
+                                <Link to={'/profile/edit'} className={'text-center bg-blue-300 w-56 rounded-md'}>Редактировать
                                     профиль</Link>}
                             {!name.isUser && !follow.isFollow && <button onClick={() => handleSubscribe(id)}
-                                                                         className={'bg-blue-500 w-56 rounded-md'}>Подписаться</button>}
+                                                                         className={'bg-blue-400 w-56 rounded-md'}>Подписаться</button>}
                             {!name.isUser && follow.isFollow && <button onClick={() => handleUnsubscribe(id)}
-                                                                        className={'bg-blue-500 w-56 rounded-md'}>Отписаться</button>}
+                                                                        className={'bg-blue-300 w-56 rounded-md'}>Отписаться</button>}
                         </div>
                         <div className={'flex flex-col mt-6 font-semibold'}>
                             <Link to={`/subscriptions/list/${id}`}>Подписки: {follow.followsToNum}</Link>
@@ -198,33 +221,11 @@ export function Profile(): JSX.Element {
                 </div>
                 <div className={'card-box flex flex-col justify-center w-2/4 mx-auto'}>
                     {name.isUser && <PostForm setPosts={fetchPosts}/>}
-                    <p className={'font-semibold text-2xl mb-5'}>Мои записи</p>
+                    <p className={'font-semibold text-2xl mb-5 mt-6'}>Записи</p>
                     {posts && posts.map((el) =>
                             <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
                                 <PostCard key={el.id} post={el} handleDeletePost={handleDeletePost}/>
                             </div>
-                        // <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
-                        //     <div className={'justify-between flex ml-4 mt-2'}>
-                        //         <div className={'flex'}>
-                        //             <img src={`http://localhost:3000${name.avatar}`} className={'max-h-12 rounded-full mx-auto mr-5'}/>
-                        //             <div className={'flex flex-col'}>
-                        //                 <div className={'font-bold'}>{el.firstName} {el.lastName}</div>
-                        //                 <div className={'font-light self-start'}>{el.date}</div>
-                        //             </div>
-                        //         </div>
-                        //     </div>
-                        //     <div className={'self-start text-left m-4'}>
-                        //         {el.text}
-                        //     </div>
-                        //     {el.photo && (
-                        //         <div className={'flex justify-center mb-2'}>
-                        //             <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
-                        //         </div>
-                        //     )}
-                        //     {name.isUser &&
-                        //         <button onClick={() => handleDeletePost(el.id)} className={'mr-3 self-end mb-2'}>Удалить
-                        //             пост</button>}
-                        // </div>
                     )}
                 </div>
             </div>

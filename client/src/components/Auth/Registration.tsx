@@ -1,11 +1,21 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 
-export function Registration({setIsLoggedIn, setUser}): JSX.Element {
+interface UserData {
+    id: number,
+    firstName: string,
+    lastName: string,
+}
+
+interface RegProps {
+    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+    setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
+}
+export function Registration({setIsLoggedIn, setUser}: RegProps): JSX.Element {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({ email: '', firstName: '', lastName: '', password: '' });
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         try {
@@ -36,7 +46,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
         }
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
 
@@ -65,7 +75,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
                                     autoComplete="email"
                                     onChange={handleChange}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -81,7 +91,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
                                     type="text"
                                     onChange={handleChange}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -97,7 +107,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
                                     type="text"
                                     onChange={handleChange}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -116,7 +126,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
                                     onChange={handleChange}
                                     autoComplete="current-password"
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -133,7 +143,7 @@ export function Registration({setIsLoggedIn, setUser}): JSX.Element {
                     <p className="mt-10 text-center text-sm text-gray-500">
                         Уже есть аккаунт?
                         <br/>
-                        <Link to={'/login'} className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                        <Link to={'/login'} className="font-semibold leading-6 text-blue-400 hover:text-blue-500">
                             Вход
                         </Link>
                     </p>

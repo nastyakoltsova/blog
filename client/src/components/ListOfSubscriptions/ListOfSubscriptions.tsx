@@ -1,9 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 
+interface subscriptionsData {
+    userId: number,
+    avatar: string,
+    firstName: string,
+    lastName: string
+}
+
 export function ListOfSubscriptions(): JSX.Element {
     const {id} = useParams();
-    const [subscriptions, setSubscriptions] = useState([]);
+    const [subscriptions, setSubscriptions] = useState<subscriptionsData[]>([]);
 
     useEffect(() => {
         (async function () {

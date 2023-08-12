@@ -1,7 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export function PostCard({ post, handleDeletePost }): JSX.Element {
+interface Post {
+    id: number;
+    userId: number;
+    firstName: string;
+    lastName: string;
+    photo: string | null,
+    text: string |null,
+    avatar: string;
+    date: string
+}
+
+interface PostCardProps {
+    post: Post;
+    handleDeletePost: (postId: number) => void;
+}
+
+export function PostCard({ post, handleDeletePost }: PostCardProps): JSX.Element {
     const [userId, setUserId] = useState();
 
     useEffect(() => {

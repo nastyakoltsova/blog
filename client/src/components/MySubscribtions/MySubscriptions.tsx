@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { PostCard } from "../../PostCard/PostCard";
 
+interface PostData {
+    avatar: string,
+    date: string,
+    firstName: string,
+    postId: number,
+    lastName: string,
+    photo: string | null,
+    text: string |null,
+    userId: number,
+}
+
 export function MySubscriptions(): JSX.Element {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<PostData[]>([]);
 
     useEffect(() => {
         async function fetchPosts() {

@@ -3,10 +3,29 @@ import {PostForm} from "../FormNews/FormNews";
 import {Link} from "react-router-dom";
 import {PostCard} from "../../PostCard/PostCard";
 
+interface ProfileData {
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    avatar: string
+}
+
+export interface PostData {
+    avatar: string,
+    date: string,
+    firstName: string,
+    id: number,
+    lastName: string,
+    photo: string | null,
+    text: string |null,
+    userId: number,
+}
+
 export function News(): JSX.Element {
-    const [posts, setPosts] = useState([]);
-    const [userId, setUserId] = useState();
-    const [name, setName] = useState({});
+    const [posts, setPosts] = useState<PostData[]>([]);
+    const [userId, setUserId] = useState<string | undefined>();
+    const [name, setName] = useState<ProfileData>({ id: 0, firstName: '', lastName: '', email: '', avatar: ''});
 
     useEffect(() => {
         (async function () {
@@ -15,9 +34,7 @@ export function News(): JSX.Element {
                     credentials: 'include',
                 });
                 const result = await response.json();
-                console.log(result)
                 setPosts(result.data);
-                console.log(posts)
             } catch (error) {
                 console.log(error)
             }
@@ -47,8 +64,8 @@ export function News(): JSX.Element {
                 const result = await response.json();
                 if (result.formattedData !== undefined) {
                     setName(result.formattedData);
+                    console.log(name)
                 }
-                console.log(name)
             } catch (error) {
                 console.log(error)
             }
@@ -84,25 +101,9 @@ export function News(): JSX.Element {
                         <PostForm setPosts={fetchPosts}/>
                     </div>
                     {posts && posts.map((el) =>
-                            <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
-                                <PostCard post={el} handleDeletePost={handleDeletePost} />
-                            </div>
-                        // <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-blue-100 rounded-xl'}>
-                        //     <div className={'self-start ml-4 mt-2 font-bold'}>
-                        //         <Link to={`../profile/${el.userId}`}>{el.firstName} {el.lastName}</Link>
-                        //     </div>
-                        //     <div className={'self-start text-left m-4'}>
-                        //         {el.text}
-                        //     </div>
-                        //     {el.photo && (
-                        //         <div className={'flex justify-center mb-2'}>
-                        //             <img src={`http://localhost:3000${el.photo}`} className={'max-h-96 mx-auto'}/>
-                        //         </div>
-                        //     )}
-                        //     <div className={'self-end mr-4 font-light'}>
-                        //         {el.date}
-                        //     </div>
-                        // </div>
+                        <div key={el.id} className={'flex flex-col text-center mb-5 border-2 bg-gray-50 rounded-xl'}>
+                            <PostCard post={el} handleDeletePost={handleDeletePost}/>
+                        </div>
                     )}
                 </div>
             </div>

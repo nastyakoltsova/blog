@@ -1,9 +1,18 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 
-export function Sidebar({isLoggedIn, setIsLoggedIn, user, setUser}): JSX.Element {
-    // const [isLoggedIn, setIsLoggedIn] = useState(false);
-    // const [user, setUser] = useState(null);
+interface UserData {
+    id: number;
+    email: string;
+}
+
+interface SidebarProps {
+    isLoggedIn: boolean;
+    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+    user: UserData;
+    setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
+}
+export function Sidebar({isLoggedIn, setIsLoggedIn, user, setUser}: SidebarProps): JSX.Element {
     const userLogout = async () => {
         try {
             const response = await fetch('http://localhost:3000/api/users/logout', {
@@ -41,7 +50,7 @@ export function Sidebar({isLoggedIn, setIsLoggedIn, user, setUser}): JSX.Element
                             <Link to={'/mysubscriptions'}>Мои подписки</Link>
                             <Link to={`/profile/${user.id}`}>Профиль</Link>
                             <Link to={'/login'}>
-                                <button onClick={() => userLogout()} className="bg-gray-200 hover:shadow-yellow-100 hover:bg-yellow-100 shadow-md shadow-white/50 ml-3 cursor-pointer rounded-md py-2 px-4 text-md font-medium">
+                                <button onClick={() => userLogout()} className="bg-white shadow-md shadow-white/50 cursor-pointer rounded-md py-2 px-4 text-md border-none ">
                                     <h4>Выход</h4>
                                 </button>
                             </Link>

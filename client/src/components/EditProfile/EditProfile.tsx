@@ -1,10 +1,13 @@
-import {useEffect, useState} from "react";
-
+import {ChangeEvent, FormEvent, useEffect, useState} from "react";
+interface UserData {
+    firstName: string;
+    lastName: string;
+    email: string;
+}
 export function EditProfile(): JSX.Element {
-    const [data, setData] = useState();
-    const [userId, setUserId] = useState();
-    const [formData, setFormData] = useState({firstName: '', lastName: '', email: ''});
-
+    const [data, setData] = useState<UserData | undefined>();
+    const [userId, setUserId] = useState<string | undefined>();
+    const [formData, setFormData] = useState<UserData>({firstName: '', lastName: '', email: '',});
     useEffect(() => {
         (async function () {
             try {
@@ -37,7 +40,7 @@ export function EditProfile(): JSX.Element {
         })()
     }, [userId]);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         console.log(formData)
         try {
@@ -66,7 +69,7 @@ export function EditProfile(): JSX.Element {
         }
     }
 
-    const handleChange = (event) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
         console.log(formData)
     };
